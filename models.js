@@ -1,18 +1,5 @@
 const mongoose = require('mongoose');
 
-const commentSchema = new mongoose.Schema({
-    author: {
-        type: String,
-        required: true
-    },
-    text: {
-        type: String,
-        required: true
-    }
-})
-
-module.exports = mongoose.model('comment', commentSchema);
-
 const ticketSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -25,18 +12,21 @@ const ticketSchema = new mongoose.Schema({
         required: false
     },
     tags: [{
-        type: String,
-        default: []
+        type: String
     }],
     comments: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'comment',
-        default: []
+        author: {
+            type: String,
+            required: true
+        },
+        text: {
+            type: String,
+            required: false
+        }
     }],
     status: {
         type: String,
-        required: true,
-        default: 'Todo'
+        required: true
     }
 })
 

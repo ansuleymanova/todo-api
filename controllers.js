@@ -7,8 +7,8 @@ function getTickets(req, res, next) {
 }
 
 function postTicket(req, res, next) {
-    const { title, description = '', tags } = req.body;
-    Ticket.create({title, description, tags, status: 'Todo'})
+    const { title, description = '', tags, status } = req.body;
+    Ticket.create({title, description, tags, status})
     .then((card) => res.status(200).send(card))
     .catch(next)
 }
@@ -21,20 +21,29 @@ function getTicket(req, res, next) {
 
 function putTicket(req, res, next) {
     const { title, description, tags, comments, status } = req.body;
-    Ticket.findOneAndUpdate(
-        req.params.cardId, { $set: {
+    Ticket.findByIdAndUpdate(
+        req.params.id, { $set: {
             title: title,
             description: description,
             tags: tags,
             comments: comments,
             status: status
         }}
-    ).then((card) => res.status(200).send(card)).catch(next);
+    ).then((card) => res.status(200).send(card)).catch(err => console.log(err));
+}
+
+function deleteTicket(req, res, next) {
+    Ticket.findById(req.params.id)
+        .then((card) => {
+            return card.remove().then(() => res.send({ message: 'Карточка удалена' }));
+        })
+        .catch(next);
 }
 
 module.exports = {
     getTicket,
     getTickets,
     postTicket,
-    putTicket
+    putTicket,
+    deleteTicket
 }

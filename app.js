@@ -1,11 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const NotFoundError = require('./not-found-err');
-const {getTickets, getTicket, putTicket, postTicket} = require('./controllers');
+const {getTickets, getTicket, putTicket, postTicket, deleteTicket} = require('./controllers');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 
 const app = express();
 mongoose.set('toObject', { useProjection: true });
@@ -13,7 +14,7 @@ mongoose.set('toJSON', { useProjection: true });
 mongoose.connect('mongodb://localhost:27017/todo', {
     useNewUrlParser: true,
 });
-
+app.use('*', cors());
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,6 +23,7 @@ app.get('/tickets', getTickets);
 app.post('/tickets', postTicket);
 app.get('/tickets/:id', getTicket);
 app.put('/tickets/:id', putTicket);
+app.delete('/tickets/:id', deleteTicket);
 
 
 app.use('*', (req, res, next) => {
